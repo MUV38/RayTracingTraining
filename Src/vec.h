@@ -3,8 +3,6 @@
 
 #include <cmath>
 
-namespace edupt {
-
 struct Vec {
 	double x, y, z;
 	     Vec(const double x = 0, const double y = 0, const double z = 0) : x(x), y(y), z(z) {}
@@ -45,7 +43,5 @@ inline const Vec cross(const Vec &v1, const Vec &v2) {
 		(v1.z * v2.x) - (v1.x * v2.z),
 		(v1.x * v2.y) - (v1.y * v2.x));
 }
-
-};
 
 #endif

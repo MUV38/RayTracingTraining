@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\material.h" />
     <ClInclude Include="Src\ppm.h" />
     <ClInclude Include="Src\vec.h" />
   </ItemGroup>

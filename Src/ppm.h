@@ -8,8 +8,6 @@
 
 #include "material.h"
 
-namespace edupt {
-
 inline double clamp(double x){ 
 	if (x < 0.0)
 		return 0.0;
@@ -29,8 +27,5 @@ void save_ppm_file(const std::string &filename, const Color *image, const int wi
 		fprintf(f,"%d %d %d ", to_int(image[i].x), to_int(image[i].y), to_int(image[i].z));
 	fclose(f);
 }
-
-
-};
 
 #endif
