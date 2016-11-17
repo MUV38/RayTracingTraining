@@ -72,6 +72,7 @@
   <ItemGroup>
     <ClInclude Include="Src\material.h" />
     <ClInclude Include="Src\ppm.h" />
+    <ClInclude Include="Src\ray.h" />
     <ClInclude Include="Src\renderer.h" />
     <ClInclude Include="Src\vec.h" />
   </ItemGroup>
