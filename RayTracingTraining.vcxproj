@@ -74,6 +74,7 @@
     <ClInclude Include="Src\ppm.h" />
     <ClInclude Include="Src\ray.h" />
     <ClInclude Include="Src\renderer.h" />
+    <ClInclude Include="Src\shade_record.h" />
     <ClInclude Include="Src\vec.h" />
   </ItemGroup>
   <ItemGroup>
