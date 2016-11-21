@@ -27,7 +27,7 @@ public:
 	virtual bool Hit(ShadeRecord* sr, double* tmin, double t_max, Vec* normal, const Ray& ray) = 0;
 
 public:
-	Material m_material;
+	Material material;
 };
 
 

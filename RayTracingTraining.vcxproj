@@ -78,7 +78,9 @@
     <ClInclude Include="Src\renderer.h" />
     <ClInclude Include="Src\shade_record.h" />
     <ClInclude Include="Src\sphere.h" />
+    <ClInclude Include="Src\tracer.h" />
     <ClInclude Include="Src\vec.h" />
+    <ClInclude Include="Src\world.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Src\main.cpp" />
