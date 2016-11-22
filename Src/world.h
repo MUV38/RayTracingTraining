@@ -31,19 +31,19 @@ public:
 	/**
 	* @brief 全オブジェクトとレイとの交差判定
 	*/
-	bool HitObjects(const Ray& ray, double t_max, ShadeRecord* rec)
+	bool HitObjects(const Ray& ray, ShadeRecord* rec)
 	{
 		ShadeRecord sr;
 		double t = 0;
-		double tmin = t_max;
+		double tmin = FLT_MAX;
 		Vec normal = Vec(0, 1, 0);
 
 		for (auto& obj : m_object) {
 			// レイと一番近い点を採用する
-			if (obj->Hit(&sr, &t, tmin, &normal, ray) && t < tmin) {
+			if (obj->Hit(&sr, &t, &normal, ray) && t < tmin) {
 				sr.is_intersect = true;
 				sr.normal = normal;
-				sr.material = obj->material;
+				memcpy(&sr.material, &obj->material, sizeof(Material));
 				tmin = t;
 			}
 		}

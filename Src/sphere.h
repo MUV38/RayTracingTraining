@@ -14,7 +14,7 @@ public:
 	~Sphere(){}
 	
 public:
-	bool Hit(ShadeRecord* sr, double* tmin, double t_max, Vec* normal, const Ray& ray) override
+	bool Hit(ShadeRecord* sr, double* tmin, Vec* normal, const Ray& ray) override
 	{
 		Vec s = ray.origin - pos;
 
@@ -33,7 +33,7 @@ public:
 
 		// -�̏ꍇ
 		t = (-B - E) / denom;
-		if (t >= 0 && t < t_max) {
+		if (t >= 0) {
 			*tmin = t;
 			*normal = normalize((s + t * ray.direction) / radius);
 			sr->hit_point = ray.origin + t * ray.direction;
@@ -42,7 +42,7 @@ public:
 
 		// +�̏ꍇ
 		t = (-B + E) / denom;
-		if (t >= 0 && t < t_max) {
+		if (t >= 0) {
 			*tmin = t;
 			*normal = normalize((s + t * ray.direction) / radius);
 			sr->hit_point = ray.origin + t * ray.direction;

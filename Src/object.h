@@ -24,7 +24,7 @@ public:
 	* @param [out]	normal	–@ü
 	* @param [in]	ray		ƒŒƒC
 	*/
-	virtual bool Hit(ShadeRecord* sr, double* tmin, double t_max, Vec* normal, const Ray& ray) = 0;
+	virtual bool Hit(ShadeRecord* sr, double* tmin, Vec* normal, const Ray& ray) = 0;
 
 public:
 	Material material;

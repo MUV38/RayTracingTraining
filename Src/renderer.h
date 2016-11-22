@@ -4,6 +4,9 @@
 #include "material.h"
 #include "ppm.h"
 #include "ray.h"
+#include "sphere.h"
+#include "plane.h"
+#include "monte_carlo_ray_tracer.h"
 
 namespace Renderer
 {
@@ -21,6 +24,31 @@ void Render(const std::string& filename, int width, int height)
 	const Vec screen_x = normalize(cross(camera_up, camera_dir));
 	const Vec screen_y = normalize(cross(camera_dir, screen_x));
 	const Vec screen_center = camera_position + camera_dir * screen_dist;
+
+	// ¢ŠE‚Ì’è‹`
+	World world;
+	{
+		Sphere* sphere = new Sphere();
+		sphere->pos = Vec(20, 0, 20);
+		sphere->radius = 20;
+		sphere->material.albedo = Color(0, 1, 0);
+		world.AddObject(sphere);
+
+		Sphere* sphere2 = new Sphere();
+		sphere2->pos = Vec(-20, 0, 20);
+		sphere2->radius = 20;
+		sphere2->material.albedo = Color(1, 0, 0);
+		world.AddObject(sphere2);
+
+		Plane* plane = new Plane();
+		plane->normal = Vec(0, 1, 0);
+		plane->pos = Vec(0, 0, 0);
+		plane->material.albedo = Color(1, 1, 0);
+		world.AddObject(plane);
+	}
+
+	MonteCarloRayTracer tracer(&world);
+
 
 	Color* image = new Color[width*height];
 
@@ -51,9 +79,10 @@ void Render(const std::string& filename, int width, int height)
 			{
 				double t = 0.5 * ray.direction.y + 1.0;
 				backgroundColor = (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);
+				world.SetBackgroundColor(backgroundColor);
 			}
 
-			image[image_index] = backgroundColor;
+			image[image_index] = tracer.TraceRay(ray);
 		}
 	}
 
