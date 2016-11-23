@@ -14,7 +14,7 @@ struct ShadeRecord
 	}
 
 	bool		is_intersect;	//!< レイと交差したか
-	Material	material;		//!< マテリアル
+	Material*	material;		//!< マテリアル
 	Vec			normal;			//!< 法線
 	Vec			hit_point;		//!< 交差点
 };

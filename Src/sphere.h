@@ -2,13 +2,15 @@
 #define	_SPHERE_H_
 
 #include "object.h"
+#include "material.h"
 
 class Sphere : public Object
 {
 public:
-	Sphere()
-	: radius(1)
-	, pos(0, 0, 0)
+	Sphere(Material* material)
+		: Object(material)
+		, radius(1)
+		, pos(0, 0, 0)
 	{}
 
 	~Sphere(){}

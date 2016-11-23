@@ -1,3 +1,9 @@
+/**
+* ‚±‚Ìƒtƒ@ƒCƒ‹‚Íedupt‚©‚çŽ‚Á‚Ä‚«‚½‚à‚Ì‚Å‚·
+* •Ö‹XãAnamespace‚Ííœ‚µ‚Ä‚¢‚Ü‚·
+* https://github.com/githole/edupt
+*/
+
 #ifndef	_VEC_H_
 #define	_VEC_H_
 
@@ -24,6 +30,9 @@ struct Vec {
 	inline const double length() const { 
 		return sqrt(length_squared()); 
 	}
+	inline Vec operator-() const {
+		return Vec(-x, -y, -z);
+	}
 };
 inline Vec operator*(double f, const Vec &v) { 
 	return v * f; 
@@ -42,6 +51,19 @@ inline const Vec cross(const Vec &v1, const Vec &v2) {
 		(v1.y * v2.z) - (v1.z * v2.y),
 		(v1.z * v2.x) - (v1.x * v2.z),
 		(v1.x * v2.y) - (v1.y * v2.x));
+}
+
+inline Vec reflect(const Vec &in, const Vec &normal) {
+	return normalize(in - normal * 2.0 * dot(normal, in));
+}
+
+// ³‹K’¼ŒðŠî’ê‚ðì‚é
+inline void createOrthoNormalBasis(const Vec &normal, Vec *tangent, Vec *binormal) {
+	if (abs(normal.x) > abs(normal.y))
+		*tangent = normalize(cross(Vec(0, 1, 0), normal));
+	else
+		*tangent = normalize(cross(Vec(1, 0, 0), normal));
+	*binormal = normalize(cross(normal, *tangent));
 }
 
 #endif

@@ -43,7 +43,7 @@ public:
 			if (obj->Hit(&sr, &t, &normal, ray) && t < tmin) {
 				sr.is_intersect = true;
 				sr.normal = normal;
-				memcpy(&sr.material, &obj->material, sizeof(Material));
+				sr.material = obj->material;
 				tmin = t;
 			}
 		}

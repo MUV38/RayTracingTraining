@@ -13,8 +13,8 @@
 class Object
 {
 public:
-	Object(){}
-	virtual ~Object(){}
+	Object(Material* material) : material(material) {}
+	virtual ~Object(){ delete material; }
 
 public:
 	/**
@@ -27,7 +27,7 @@ public:
 	virtual bool Hit(ShadeRecord* sr, double* tmin, Vec* normal, const Ray& ray) = 0;
 
 public:
-	Material material;
+	Material* material;
 };
 
 

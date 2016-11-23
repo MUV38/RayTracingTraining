@@ -4,7 +4,7 @@
 
 int	main()
 {
-	Renderer::Render("image.ppm", 512, 512);
+	Renderer::Render("image.ppm", 640, 480);
 
 	system("open_ppm.bat");
 

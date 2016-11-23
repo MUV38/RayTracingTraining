@@ -7,6 +7,12 @@
 * @brief ƒŒƒC‚Ì’è‹`
 */
 struct Ray{
+	Ray(){}
+	Ray(const Vec& origin, const Vec& direction)
+		: origin(origin)
+		, direction(direction)
+	{}
+
 	Vec	origin;
 	Vec	direction;
 };

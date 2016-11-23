@@ -29,7 +29,7 @@ public:
 	* @param [in] ray ƒŒƒC
 	* @return •`‰æF
 	*/
-	virtual Color TraceRay(const Ray& ray) = 0;
+	virtual Color TraceRay(const Ray& ray, Random& random, const int depth) = 0;
 
 protected:
 	World* m_world;

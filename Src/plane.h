@@ -2,6 +2,7 @@
 #define	_PLANE_H_
 
 #include "object.h"
+#include "material.h"
 
 /**
 * @brief –³ŒÀ•½–Ê‚Ì’è‹`
@@ -9,8 +10,9 @@
 class Plane : public Object
 {
 public:
-	Plane()
-	: normal(0, 1, 0) 
+	Plane(Material* material)
+		: Object(material)
+		, normal(0, 1, 0) 
 	{}
 
 	~Plane() {}

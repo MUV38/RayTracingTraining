@@ -13,7 +13,7 @@ namespace Renderer
 
 void Render(const std::string& filename, int width, int height)
 {
-	const Vec camera_position = Vec(0, 10, 100);
+	const Vec camera_position = Vec(0, 30, 150);
 	const Vec camera_dir      = normalize(Vec(0.0, -0.3, -1.0));
 	const Vec camera_up       = normalize(Vec(0.0, 1.0, 0.0));
 
@@ -28,23 +28,30 @@ void Render(const std::string& filename, int width, int height)
 	// 世界の定義
 	World world;
 	{
-		Sphere* sphere = new Sphere();
-		sphere->pos = Vec(20, 0, 20);
+		Sphere* sphere = new Sphere(new LambertianMaterial(Color(0, 1, 0)));
+		sphere->pos = Vec(25, 20, 20);
 		sphere->radius = 20;
-		sphere->material.albedo = Color(0, 1, 0);
 		world.AddObject(sphere);
 
-		Sphere* sphere2 = new Sphere();
-		sphere2->pos = Vec(-20, 0, 20);
+		Sphere* sphere2 = new Sphere(new LambertianMaterial(Color(1, 0, 0)));
+		sphere2->pos = Vec(-25, 20, 20);
 		sphere2->radius = 20;
-		sphere2->material.albedo = Color(1, 0, 0);
 		world.AddObject(sphere2);
 
-		Plane* plane = new Plane();
-		plane->normal = Vec(0, 1, 0);
-		plane->pos = Vec(0, 0, 0);
-		plane->material.albedo = Color(1, 1, 0);
-		world.AddObject(plane);
+		Sphere* sphere3 = new Sphere(new LambertianMaterial(Color(1, 1, 0)));
+		sphere3->pos = Vec(-20, -100000, 20);
+		sphere3->radius = 100000.0;
+		world.AddObject(sphere3);
+
+		//Plane* plane = new Plane(new LambertianMaterial(Color(1, 1, 0)));
+		//plane->normal = Vec(0, 1, 0);
+		//plane->pos = Vec(0, 0, 0);
+		//world.AddObject(plane);
+
+		Sphere* light1 = new Sphere(new LightSource(Color(1, 1, 1)));
+		light1->pos = Vec(0, 50, 20);
+		light1->radius = 10;
+		world.AddObject(light1);
 	}
 
 	MonteCarloRayTracer tracer(&world);
@@ -55,34 +62,42 @@ void Render(const std::string& filename, int width, int height)
 	for(int h=0 ; h<height ; h++){
 		std::cerr << "Rendering (h = " << h << ") " << (100.0 * h / (height - 1)) << "%" << std::endl;
 		for(int w=0 ; w<width ; w++){
+			Random random(h * width + w + 1);
 			const int image_index = (height - h - 1) * width + w;
+			image[image_index] = Color(0, 0, 0);
+			Color color = Color(0, 0, 0);
 
-			// スクリーン座標（-1.0～1.0）を求める
-			double half_width = static_cast<double>(width) * 0.5;
-			double half_height = static_cast<double>(height) * 0.5;
-			double rate_screen_x = ((w + 1.0) - half_width) / half_width;
-			double rate_screen_y = ((h + 1.0) - half_height) / half_height;
+			// 一つのピクセルあたりsamples回サンプリングする。
+			for (int s = 0; s < 1; s++) {
+				// スクリーン座標（-1.0～1.0）を求める
+				double half_width = static_cast<double>(width) * 0.5;
+				double half_height = static_cast<double>(height) * 0.5;
+				double rate_screen_x = ((w + 1.0) - half_width) / half_width;
+				double rate_screen_y = ((h + 1.0) - half_height) / half_height;
 
-			// スクリーン上の位置
-			Vec screen_position = 
-				screen_center + 
-				(screen_x * (screen_width * rate_screen_x)) +
-				(screen_y * (screen_height * rate_screen_y));
+				// スクリーン上の位置
+				Vec screen_position = 
+					screen_center + 
+					(screen_x * (screen_width * rate_screen_x)) +
+					(screen_y * (screen_height * rate_screen_y));
 
-			// レイ
-			Ray ray;
-			ray.origin = camera_position;
-			ray.direction = normalize(screen_position - camera_position);
+				// レイ
+				Ray ray;
+				ray.origin = camera_position;
+				ray.direction = normalize(screen_position - camera_position);
 
-			// 背景色
-			Color backgroundColor(0, 0, 0);
-			{
-				double t = 0.5 * ray.direction.y + 1.0;
-				backgroundColor = (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);
-				world.SetBackgroundColor(backgroundColor);
+				// 背景色
+				//Color backgroundColor(0, 0, 0);
+				//{
+				//	double t = 0.5 * ray.direction.y + 1.0;
+				//	backgroundColor = (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);
+				//	world.SetBackgroundColor(backgroundColor);
+				//}
+
+				color = color + tracer.TraceRay(ray, random, 0) / 1.0;
 			}
 
-			image[image_index] = tracer.TraceRay(ray);
+			image[image_index] = image[image_index] + color;
 		}
 	}
 

@@ -21,7 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CLRSupport>true</CLRSupport>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -70,13 +70,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Src\constant.h" />
     <ClInclude Include="Src\material.h" />
     <ClInclude Include="Src\monte_carlo_ray_tracer.h" />
     <ClInclude Include="Src\object.h" />
     <ClInclude Include="Src\plane.h" />
     <ClInclude Include="Src\ppm.h" />
+    <ClInclude Include="Src\random.h" />
     <ClInclude Include="Src\ray.h" />
     <ClInclude Include="Src\renderer.h" />
+    <ClInclude Include="Src\Sampling.h" />
     <ClInclude Include="Src\shade_record.h" />
     <ClInclude Include="Src\sphere.h" />
     <ClInclude Include="Src\tracer.h" />
