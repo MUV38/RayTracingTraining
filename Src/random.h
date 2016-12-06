@@ -9,20 +9,22 @@
 
 #include <climits>
 
-// Xor-Shiftによる乱数ジェネレータ
+// xorshift64*による乱数ジェネレータ
+// Sebastiano Vigna. An experimental exploration of Marsaglia's xorshift generators, scrambled. CoRR, abs/1402.6246, 2014. 
+// http://xorshift.di.unimi.it/
 class XorShift {
-	unsigned int seed_[4];
+private:
+	unsigned long long x;
 public:
-	unsigned int next(void) { 
-		const unsigned int t = seed_[0] ^ (seed_[0] << 11);
-		seed_[0] = seed_[1]; 
-		seed_[1] = seed_[2];
-		seed_[2] = seed_[3];
-		return seed_[3] = (seed_[3] ^ (seed_[3] >> 19)) ^ (t ^ (t >> 8)); 
+	unsigned long long next(void) {
+		x ^= x >> 12; // a
+		x ^= x << 25; // b
+		x ^= x >> 27; // c
+		return x * 2685821657736338717LL;
 	}
 
 	double next01(void) {
-		return (double)next() / UINT_MAX;
+		return (double)next() / std::numeric_limits<unsigned long long>::max();
 	}
 
 	// [min_value, max_value]
@@ -31,11 +33,11 @@ public:
 		return ((double)next() * (inv / std::numeric_limits<unsigned long long>::max())) + min_value;
 	}
 
-	XorShift(const unsigned int initial_seed) {
-		unsigned int s = initial_seed;
-		for (int i = 1; i <= 4; i++){
-			seed_[i-1] = s = 1812433253U * (s^(s>>30)) + i;
-		}
+	XorShift(const unsigned long long initial_seed) {
+		if (initial_seed == 0)
+			x = 0xDEADBEEFDEADBEEF; // xorshift64*のseedは非ゼロでないといけない。
+		else
+			x = initial_seed;
 	}
 };
 
