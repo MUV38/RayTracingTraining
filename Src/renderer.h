@@ -21,12 +21,12 @@ void Render(const std::string& filename, int width, int height)
 	omp_set_num_threads(8);
 #endif // _OPENMP
 
-	const Vec camera_position = Vec(0, 30, 150);
-	const Vec camera_dir      = normalize(Vec(0.0, -0.3, -1.0));
+	const Vec camera_position = Vec(0, 25, 400);
+	const Vec camera_dir      = normalize(Vec(0.0, 0, -1.0));
 	const Vec camera_up       = normalize(Vec(0.0, 1.0, 0.0));
 
-	const double screen_width = 100.0 * (width / static_cast<double>(height));
-	const double screen_height = 100.0;
+	const double screen_width = 80.0 * (width / static_cast<double>(height));
+	const double screen_height = 80.0;
 	const double screen_dist  = camera_position.z; // 常にZ=0の所にスクリーンを貼る
 
 	const Vec screen_x = normalize(cross(camera_up, camera_dir));
@@ -36,30 +36,61 @@ void Render(const std::string& filename, int width, int height)
 	// 世界の定義
 	World world;
 	{
-		Sphere* sphere = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
+		// コーネルボックス
+		{
+			const double BOX_SIZE = 80.0;
+			const double HALF_BOX_SIZE = BOX_SIZE * 0.5;
+			
+			// 下
+			Sphere* box1 = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
+			box1->pos = Vec(0, -100000, 0);
+			box1->radius = 100000.0;
+			world.AddObject(box1);
+
+			// 上
+			Sphere* box2 = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
+			box2->pos = Vec(0, 100000.0 + BOX_SIZE, 0);
+			box2->radius = 100000.0;
+			world.AddObject(box2);
+
+			// 左
+			Sphere* box3 = new Sphere(new LambertianMaterial(Color(1, 0, 0)));
+			box3->pos = Vec(-100000-BOX_SIZE, HALF_BOX_SIZE, 0);
+			box3->radius = 100000.0;
+			world.AddObject(box3);
+
+			// 右
+			Sphere* box4 = new Sphere(new LambertianMaterial(Color(0, 1, 0)));
+			box4->pos = Vec(100000+BOX_SIZE, HALF_BOX_SIZE, 0);
+			box4->radius = 100000.0;
+			world.AddObject(box4);
+
+			// 正面
+			Sphere* box5 = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
+			box5->pos = Vec(0, HALF_BOX_SIZE, 100000+50);
+			box5->radius = 100000.0;
+			world.AddObject(box5);
+		}
+
+		Sphere* sphere = new Sphere(new LambertianMaterial(Color(0, 1, 1)));
 		sphere->pos = Vec(25, 20, 20);
 		sphere->radius = 20;
 		world.AddObject(sphere);
 
-		Sphere* sphere2 = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
+		Sphere* sphere2 = new Sphere(new LambertianMaterial(Color(1, 1, 0)));
 		sphere2->pos = Vec(-25, 20, 20);
 		sphere2->radius = 20;
 		world.AddObject(sphere2);
-
-		Sphere* sphere3 = new Sphere(new LambertianMaterial(Color(1, 1, 1)));
-		sphere3->pos = Vec(-20, -100000, 20);
-		sphere3->radius = 100000.0;
-		world.AddObject(sphere3);
 
 		//Plane* plane = new Plane(new LambertianMaterial(Color(1, 1, 0)));
 		//plane->normal = Vec(0, 1, 0);
 		//plane->pos = Vec(0, 0, 0);
 		//world.AddObject(plane);
 
-		//Sphere* light1 = new Sphere(new LightSource(Color(1, 1, 1)));
-		//light1->pos = Vec(0, 50, 20);
-		//light1->radius = 10;
-		//world.AddObject(light1);
+		Sphere* light1 = new Sphere(new LightSource(Color(1, 1, 1)));
+		light1->pos = Vec(0, 50, 20);
+		light1->radius = 10;
+		world.AddObject(light1);
 	}
 
 	MonteCarloRayTracer tracer(&world);
@@ -68,7 +99,7 @@ void Render(const std::string& filename, int width, int height)
 	Color* image = new Color[width*height];
 
 	int num_subpixel = 1;
-	int num_sample_per_subpixel = 16;
+	int num_sample_per_subpixel = 512;
 
 	for(int h=0 ; h<height ; h++){
 		std::cerr << "Rendering (h = " << h << ") " << (100.0 * h / (height - 1)) << "%" << std::endl;
@@ -82,15 +113,14 @@ void Render(const std::string& filename, int width, int height)
 			// num_subpixel x num_subpixel のスーパーサンプリング。
 			//for (int sy = 0; sy < num_subpixel; ++sy) {
 				//for (int sx = 0; sx < num_subpixel; ++sx) {
-
 					// 一つのピクセルあたりsamples回サンプリングする。
 					for (int s = 0; s < num_sample_per_subpixel; s++) {
 #if 1
 						// スクリーン座標（-1.0～1.0）を求める
 						double half_width = static_cast<double>(width) * 0.5;
 						double half_height = static_cast<double>(height) * 0.5;
-						double rate_screen_x = ((w + 1.0) - half_width) / half_width;
-						double rate_screen_y = ((h + 1.0) - half_height) / half_height;
+						double rate_screen_x = ((static_cast<double>(w) + 1.0) - half_width) / half_width;
+						double rate_screen_y = ((static_cast<double>(h) + 1.0) - half_height) / half_height;
 
 						// スクリーン上の位置
 						Vec screen_position = 
@@ -120,10 +150,10 @@ void Render(const std::string& filename, int width, int height)
 						//	world.SetBackgroundColor(backgroundColor);
 						//}
 
-						color = color + tracer.TraceRay(ray, random, 0) / num_sample_per_subpixel;
+						color = color + tracer.TraceRay(ray, random, 0) / static_cast<double>(num_sample_per_subpixel);
 					}
+					image[image_index] = image[image_index] + color;
 				//}
-				image[image_index] = image[image_index] + color;
 			//}
 		}
 	}
