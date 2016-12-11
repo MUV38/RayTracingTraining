@@ -33,24 +33,24 @@ public:
 	*/
 	bool HitObjects(const Ray& ray, ShadeRecord* rec)
 	{
-		ShadeRecord sr;
-		double t = 0;
+		double t = FLT_MAX;
 		double tmin = FLT_MAX;
 		Vec normal = Vec(0, 1, 0);
 
 		for (auto& obj : m_object) {
 			// ƒŒƒC‚Æˆê”Ô‹ß‚¢“_‚ðÌ—p‚·‚é
-			if (obj->Hit(&sr, &t, &normal, ray) && t < tmin) {
-				sr.is_intersect = true;
-				sr.normal = normal;
-				sr.material = obj->material;
-				tmin = t;
+			t = FLT_MAX;
+			if (obj->Hit(rec, &t, &normal, ray)) {
+				if(t < tmin){
+					rec->is_intersect = true;
+					rec->normal = normal;
+					rec->material = obj->material;
+					tmin = t;
+				}
 			}
 		}
 
-		*rec = sr;
-
-		return sr.is_intersect;
+		return rec->is_intersect;
 	}
 
 public:

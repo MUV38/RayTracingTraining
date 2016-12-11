@@ -36,6 +36,7 @@ protected:
 	Color m_emission;		//!< 発光
 };
 
+#if 1
 // LambertianBRDF
 class LambertianMaterial : public Material
 {
@@ -69,6 +70,44 @@ public:
 private:
 
 };
+
+#else
+
+// LambertianBRDF
+class LambertianMaterial : public Material
+{
+public:
+	LambertianMaterial(const Color& reflectance) : Material(reflectance, Color(0, 0, 0)) {}
+	~LambertianMaterial() {}
+
+public:
+	Color BRDF(const Vec& in, const Vec& normal, const Vec& out) const override
+	{
+		return m_reflectance / PI;
+	}
+
+	// pdfとしてcosΘ/piを使用してインポータンスサンプリングする。
+	Vec Sample(Random& random, const Vec& in, const Vec& normal, double* pdf, Color* brdf_value) const override
+	{
+		Vec binormal, tangent, now_normal = normal;
+
+		createOrthoNormalBasis(now_normal, &tangent, &binormal);
+		const Vec dir = Sampling::cosineWeightedHemisphereSurface(random, now_normal, tangent, binormal);
+
+		// pdf: cosΘ/pi
+		if (pdf != NULL) {
+			*pdf = dot(normal, dir) / PI;
+		}
+		if (brdf_value != NULL) {
+			*brdf_value = BRDF(in, normal, dir);
+		}
+		return dir;
+	}
+
+private:
+
+};
+#endif
 
 // ライト
 class LightSource : public Material

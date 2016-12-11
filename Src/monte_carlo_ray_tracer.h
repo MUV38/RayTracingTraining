@@ -24,11 +24,13 @@ public:
 			Vec unit_direction = normalize(ray.direction);
 			double t = 0.5 * (unit_direction.y + 1.0);
 			backgroundColor = (1.0 - t) * Vec(1.0, 1.0, 1.0) + t * Vec(0.5, 0.7, 1.0);
+
+			backgroundColor = Color(0, 0, 0);
 		}
 
 		// 打ち切りチェック
 		const int MAX_DEPTH = 10;
-		if(depth >= MAX_DEPTH){ return backgroundColor; }
+		if(depth >= MAX_DEPTH){ return Color(); }
 
 		// オブジェクトとの交差判定
 		ShadeRecord sr;

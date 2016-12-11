@@ -17,6 +17,17 @@ namespace Sampling
 
 		return tz * normal + tx * tangent + ty * binormal;
 	}
+
+	static Vec cosineWeightedHemisphereSurface(Random &random, const Vec &normal, const Vec &tangent, const Vec &binormal) {
+		const double phi = random.next(0.0, 2.0 * PI);
+		const double r2 = random.next01(), r2s = sqrt(r2);
+
+		const double tx = r2s * cos(phi);
+		const double ty = r2s * sin(phi);
+		const double tz = sqrt(1.0 - r2);
+
+		return tz * normal + tx * tangent + ty * binormal;
+	}
 }
 
 #endif // !_SAMPLING_H_
