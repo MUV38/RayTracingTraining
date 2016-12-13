@@ -4,6 +4,8 @@
 #include "tracer.h"
 #include "random.h"
 
+#include "../Extension/vdb/vdb.h"
+
 class MonteCarloRayTracer : public Tracer
 {
 public:
@@ -48,6 +50,9 @@ public:
 		if (emission.x > 0.0 || emission.y > 0.0 || emission.z > 0.0) {
 			return emission;
 		}
+
+		// デバッグ
+		vdb_point(sr.hit_point.x, sr.hit_point.y, sr.hit_point.z);
 
 		// 次の方向をサンプリング + その方向のBRDF項の値を得る。
 		double pdf = -1;

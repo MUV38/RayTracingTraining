@@ -98,8 +98,8 @@ void Render(const std::string& filename, int width, int height)
 
 	Color* image = new Color[width*height];
 
-	int num_subpixel = 4;
-	int num_sample_per_subpixel = 256;
+	int num_subpixel = 1;
+	int num_sample_per_subpixel = 16;
 
 	for(int h=0 ; h<height ; h++){
 		std::cerr << "Rendering (h = " << h << ") " << (100.0 * h / (height - 1)) << "%" << std::endl;
