@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include "hitable.h"
+#include "util.h"
 
 class sphere : public hitable{
 public:
@@ -28,6 +29,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 			rec.p = r.point_at_parameter(rec.t);
 			rec.normal = (rec.p - center) / radius;
             rec.mat_ptr = material;
+            get_sphere_uv((rec.p - center) / radius, rec.u, rec.v);
 			return true;
 		}
 		temp = (-b + sqrt(b*b-4*a*c)) / (2*a);
@@ -36,6 +38,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 			rec.p = r.point_at_parameter(rec.t);
 			rec.normal = (rec.p - center) / radius;
             rec.mat_ptr = material;
+            get_sphere_uv((rec.p - center) / radius, rec.u, rec.v);
             return true;
 		}
 	}

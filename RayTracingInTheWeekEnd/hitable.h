@@ -11,6 +11,15 @@ struct hit_record{
 	vec3		p;
 	vec3		normal;
 	material*   mat_ptr;
+    float       u, v;
+
+    hit_record()
+        : t (-1)
+        , p(0, 0, 0)
+        , mat_ptr(nullptr)
+        , u(0)
+        , v(0)
+    {}
 };
 
 class hitable{

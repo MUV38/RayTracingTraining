@@ -5,6 +5,10 @@
 #include <cfloat>
 #include <chrono>
 #include <omp.h>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+
 #include "sphere.h"
 #include "moving_sphere.h"
 #include "hitable_list.h"
@@ -88,10 +92,15 @@ hitable* random_scene()
 
 hitable* two_spheres()
 {
+    // load image
+    int nx, ny, nn;
+    unsigned char* tex_data = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
+
     texture* pertext = new noise_texture(5);
     hitable** list = new hitable*[2];
     list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pertext));
-    list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
+    //list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
+    list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(new image_texture(tex_data, nx, ny)));
 
     return new hitable_list(list, 2);
 }
