@@ -16,14 +16,18 @@
 #include "util.h"
 #include "material.h"
 #include "texture.h"
+#include "rect.h"
 
 #define RANDOM_SCENE (0)
-#define TWO_SPHERE_SCENE (1)
+#define TWO_SPHERE_SCENE (0)
+#define SIMPLE_LIGHT_SCENE (1)
 
 #if RANDOM_SCENE
 #define ENABLE_RANDOM_SCENE (1)
 #elif TWO_SPHERE_SCENE
 #define ENABLE_TWO_SPHERE_SCENE (1)
+#elif SIMPLE_LIGHT_SCENE
+#define ENABLE_SIMPLE_LIGHT_SCENE (1)
 #endif
 
 vec3 color(const ray& r, hitable* world, int depth){
@@ -31,15 +35,14 @@ vec3 color(const ray& r, hitable* world, int depth){
 	if(world->hit(r, 0.001, FLT_MAX, rec)){
         ray scattered;
         vec3 attenuation;
+        vec3 emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
         if(depth < 50 && rec.mat_ptr->scatter(r, rec, attenuation, scattered)){
-            return attenuation * color(scattered, world, depth+1);
+            return emitted + attenuation * color(scattered, world, depth+1);
         }else{
-            return vec3(0, 0, 0);
+            return emitted;
         }
 	}else{
-		vec3 unit_direction = unit_vector(r.direction());
-		double t = 0.5 * (unit_direction.y() + 1.0);
-		return (1.0-t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+        return vec3(0, 0, 0);
 	}
 }
 
@@ -105,13 +108,24 @@ hitable* two_spheres()
     return new hitable_list(list, 2);
 }
 
+hitable* simple_light()
+{
+    texture* pertext = new noise_texture(4);
+    hitable** list = new hitable*[4];
+    list[0] = new sphere(vec3(0, -1000, 0), 1000, new lambertian(pertext));
+    list[1] = new sphere(vec3(0, 2, 0), 2, new lambertian(pertext));
+    list[2] = new sphere(vec3(0, 7, 0), 2, new diffuse_light(new constant_texture(vec3(4, 4, 4))));
+    list[3] = new xy_rect(3, 5, 1, 3, -2, new diffuse_light(new constant_texture(vec3(4, 4, 4))));
+    return new hitable_list(list, 4);
+}
+
 int main(){
 	std::ofstream ofs;
 	ofs.open("image.ppm", std::ios::out|std::ios::trunc);
 	
 	const int nx = 360;
 	const int ny = 180;
-	int ns = 10;
+	int ns = 200;
 	std::cout << "write ppm image\n" << "w:" << nx << " " << "h:" << ny << "\n";
 	ofs << "P3\n" << nx << " " << ny << "\n255\n";
 		
@@ -139,6 +153,15 @@ int main(){
     float dist_to_focus = 10.0;
     float aperture = 0.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
+#elif ENABLE_SIMPLE_LIGHT_SCENE
+    hitable* world = simple_light();
+
+    vec3 lookfrom(22, 4, 3);
+    vec3 lookat(0, 3, 0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.0;
+    camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
+
 #endif
 
     auto start_time = std::chrono::system_clock::now();

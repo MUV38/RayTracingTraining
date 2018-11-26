@@ -71,5 +71,8 @@
     <ClInclude Include="ThirdParty\stb\stb_image_write.h">
       <Filter>ThirdParty\stb</Filter>
     </ClInclude>
+    <ClInclude Include="rect.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
