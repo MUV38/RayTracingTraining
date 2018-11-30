@@ -74,5 +74,8 @@
     <ClInclude Include="rect.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="flip_normals.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

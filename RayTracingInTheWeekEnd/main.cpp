@@ -17,10 +17,12 @@
 #include "material.h"
 #include "texture.h"
 #include "rect.h"
+#include "flip_normals.h"
 
 #define RANDOM_SCENE (0)
 #define TWO_SPHERE_SCENE (0)
-#define SIMPLE_LIGHT_SCENE (1)
+#define SIMPLE_LIGHT_SCENE (0)
+#define CORNELL_BOX_SCENE (1)
 
 #if RANDOM_SCENE
 #define ENABLE_RANDOM_SCENE (1)
@@ -28,6 +30,8 @@
 #define ENABLE_TWO_SPHERE_SCENE (1)
 #elif SIMPLE_LIGHT_SCENE
 #define ENABLE_SIMPLE_LIGHT_SCENE (1)
+#elif CORNELL_BOX_SCENE
+#define ENABLE_CORNELL_BOX_SCENE (1)
 #endif
 
 vec3 color(const ray& r, hitable* world, int depth){
@@ -119,6 +123,23 @@ hitable* simple_light()
     return new hitable_list(list, 4);
 }
 
+hitable* cornel_box()
+{
+    hitable** list = new hitable*[6];
+    int i = 0;
+    material* red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
+    material* white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+    material* green = new lambertian(new constant_texture(vec3(0.12, 0.45, 0.15)));
+    material* light = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
+    list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
+    list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
+    list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
+    list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
+    list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
+    list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
+    return new hitable_list(list, i);
+}
+
 int main(){
 	std::ofstream ofs;
 	ofs.open("image.ppm", std::ios::out|std::ios::trunc);
@@ -161,6 +182,15 @@ int main(){
     float dist_to_focus = 10.0;
     float aperture = 0.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
+#elif ENABLE_CORNELL_BOX_SCENE
+    hitable* world = cornel_box();
+
+    vec3 lookfrom(278, 278, -800);
+    vec3 lookat(278, 278, 0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.0;
+    float vfov = 40.0;
+    camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
 
 #endif
 
