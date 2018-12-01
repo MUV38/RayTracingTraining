@@ -18,6 +18,7 @@
 #include "texture.h"
 #include "rect.h"
 #include "flip_normals.h"
+#include "box.h"
 
 #define RANDOM_SCENE (0)
 #define TWO_SPHERE_SCENE (0)
@@ -137,6 +138,8 @@ hitable* cornel_box()
     list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
     list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
     list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
+    list[i++] = new box(vec3(130, 0, 65), vec3(295, 165, 230), white);
+    list[i++] = new box(vec3(265, 0, 295), vec3(430, 330, 460), white);
     return new hitable_list(list, i);
 }
 
@@ -146,7 +149,7 @@ int main(){
 	
 	const int nx = 360;
 	const int ny = 180;
-	int ns = 200;
+	int ns = 100;
 	std::cout << "write ppm image\n" << "w:" << nx << " " << "h:" << ny << "\n";
 	ofs << "P3\n" << nx << " " << ny << "\n255\n";
 		
