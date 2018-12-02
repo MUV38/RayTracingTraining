@@ -80,7 +80,7 @@
     <ClInclude Include="box.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
+    <ClInclude Include="transform.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
   </ItemGroup>

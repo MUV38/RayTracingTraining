@@ -19,11 +19,12 @@
 #include "rect.h"
 #include "flip_normals.h"
 #include "box.h"
+#include "transform.h"
 
 #define RANDOM_SCENE (0)
 #define TWO_SPHERE_SCENE (0)
 #define SIMPLE_LIGHT_SCENE (0)
-#define CORNELL_BOX_SCENE (1)
+#define CORNEL_BOX_SCENE (1)
 
 #if RANDOM_SCENE
 #define ENABLE_RANDOM_SCENE (1)
@@ -31,8 +32,8 @@
 #define ENABLE_TWO_SPHERE_SCENE (1)
 #elif SIMPLE_LIGHT_SCENE
 #define ENABLE_SIMPLE_LIGHT_SCENE (1)
-#elif CORNELL_BOX_SCENE
-#define ENABLE_CORNELL_BOX_SCENE (1)
+#elif CORNEL_BOX_SCENE
+#define ENABLE_CORNEL_BOX_SCENE (1)
 #endif
 
 vec3 color(const ray& r, hitable* world, int depth){
@@ -138,8 +139,8 @@ hitable* cornel_box()
     list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
     list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
     list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
-    list[i++] = new box(vec3(130, 0, 65), vec3(295, 165, 230), white);
-    list[i++] = new box(vec3(265, 0, 295), vec3(430, 330, 460), white);
+    list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130, 0, 65));
+    list[i++] = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15), vec3(265, 0, 295));
     return new hitable_list(list, i);
 }
 
@@ -149,7 +150,7 @@ int main(){
 	
 	const int nx = 360;
 	const int ny = 180;
-	int ns = 100;
+	int ns = 50;
 	std::cout << "write ppm image\n" << "w:" << nx << " " << "h:" << ny << "\n";
 	ofs << "P3\n" << nx << " " << ny << "\n255\n";
 		
@@ -185,7 +186,7 @@ int main(){
     float dist_to_focus = 10.0;
     float aperture = 0.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
-#elif ENABLE_CORNELL_BOX_SCENE
+#elif ENABLE_CORNEL_BOX_SCENE
     hitable* world = cornel_box();
 
     vec3 lookfrom(278, 278, -800);
