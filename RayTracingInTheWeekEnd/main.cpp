@@ -20,11 +20,14 @@
 #include "flip_normals.h"
 #include "box.h"
 #include "transform.h"
+#include "medium.h"
 
 #define RANDOM_SCENE (0)
 #define TWO_SPHERE_SCENE (0)
 #define SIMPLE_LIGHT_SCENE (0)
-#define CORNEL_BOX_SCENE (1)
+#define CORNELL_BOX_SCENE (0)
+#define CORNELL_SMOKE_SCENE (1)
+
 
 #if RANDOM_SCENE
 #define ENABLE_RANDOM_SCENE (1)
@@ -32,8 +35,10 @@
 #define ENABLE_TWO_SPHERE_SCENE (1)
 #elif SIMPLE_LIGHT_SCENE
 #define ENABLE_SIMPLE_LIGHT_SCENE (1)
-#elif CORNEL_BOX_SCENE
-#define ENABLE_CORNEL_BOX_SCENE (1)
+#elif CORNELL_BOX_SCENE
+#define ENABLE_CORNELL_BOX_SCENE (1)
+#elif CORNELL_SMOKE_SCENE
+#define ENABLE_CORNELL_SMOKE_SCENE (1)
 #endif
 
 vec3 color(const ray& r, hitable* world, int depth){
@@ -125,14 +130,13 @@ hitable* simple_light()
     return new hitable_list(list, 4);
 }
 
-hitable* cornel_box()
-{
-    hitable** list = new hitable*[6];
+hitable *cornell_box() {
+    hitable **list = new hitable*[8];
     int i = 0;
-    material* red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
-    material* white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
-    material* green = new lambertian(new constant_texture(vec3(0.12, 0.45, 0.15)));
-    material* light = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
+    material *red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
+    material *white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+    material *green = new lambertian(new constant_texture(vec3(0.12, 0.45, 0.15)));
+    material *light = new diffuse_light(new constant_texture(vec3(15, 15, 15)));
     list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
     list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
     list[i++] = new xz_rect(213, 343, 227, 332, 554, light);
@@ -144,16 +148,31 @@ hitable* cornel_box()
     return new hitable_list(list, i);
 }
 
-int main(){
-	std::ofstream ofs;
-	ofs.open("image.ppm", std::ios::out|std::ios::trunc);
-	
+hitable *cornell_smoke() {
+    hitable **list = new hitable*[8];
+    int i = 0;
+    material *red = new lambertian(new constant_texture(vec3(0.65, 0.05, 0.05)));
+    material *white = new lambertian(new constant_texture(vec3(0.73, 0.73, 0.73)));
+    material *green = new lambertian(new constant_texture(vec3(0.12, 0.45, 0.15)));
+    material *light = new diffuse_light(new constant_texture(vec3(7, 7, 7)));
+    list[i++] = new flip_normals(new yz_rect(0, 555, 0, 555, 555, green));
+    list[i++] = new yz_rect(0, 555, 0, 555, 0, red);
+    list[i++] = new xz_rect(113, 443, 127, 432, 554, light);
+    list[i++] = new flip_normals(new xz_rect(0, 555, 0, 555, 555, white));
+    list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
+    list[i++] = new flip_normals(new xy_rect(0, 555, 0, 555, 555, white));
+    hitable *b1 = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 165, 165), white), -18), vec3(130, 0, 65));
+    hitable *b2 = new translate(new rotate_y(new box(vec3(0, 0, 0), vec3(165, 330, 165), white), 15), vec3(265, 0, 295));
+    list[i++] = new constant_medium(b1, 0.01, new constant_texture(vec3(1.0, 1.0, 1.0)));
+    list[i++] = new constant_medium(b2, 0.01, new constant_texture(vec3(0.0, 0.0, 0.0)));
+    return new hitable_list(list, i);
+}
+
+int main(){	
 	const int nx = 360;
 	const int ny = 180;
-	int ns = 50;
-	std::cout << "write ppm image\n" << "w:" << nx << " " << "h:" << ny << "\n";
-	ofs << "P3\n" << nx << " " << ny << "\n255\n";
-		
+	int ns = 200;
+
 	//hitable* list[5];
  //   list[0] = new sphere(vec3(0, 0, -1), 0.5, new lambertian(vec3(0.1, 0.2, 0.5))); 
  //   list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(vec3(0.8, 0.8, 0.0))); 
@@ -186,8 +205,8 @@ int main(){
     float dist_to_focus = 10.0;
     float aperture = 0.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), 20, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
-#elif ENABLE_CORNEL_BOX_SCENE
-    hitable* world = cornel_box();
+#elif ENABLE_CORNELL_BOX_SCENE
+    hitable* world = cornell_box();
 
     vec3 lookfrom(278, 278, -800);
     vec3 lookat(278, 278, 0);
@@ -195,8 +214,18 @@ int main(){
     float aperture = 0.0;
     float vfov = 40.0;
     camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
+#elif ENABLE_CORNELL_SMOKE_SCENE
+    hitable* world = cornell_smoke();
 
+    vec3 lookfrom(278, 278, -800);
+    vec3 lookat(278, 278, 0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.0;
+    float vfov = 40.0;
+    camera cam(lookfrom, lookat, vec3(0, 1, 0), vfov, float(nx) / float(ny), aperture, dist_to_focus, 0.0, 1.0);
 #endif
+
+    std::cout << "write ppm image\n" << "w:" << nx << " " << "h:" << ny << "\n";
 
     auto start_time = std::chrono::system_clock::now();
 
@@ -214,7 +243,10 @@ int main(){
 				col += color(r, world, 0);
 			}
 			col /= double(ns);
-			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
+            col[0] = col[0] <= 1.0f ? col[0] : 1.0f;
+            col[1] = col[1] <= 1.0f ? col[1] : 1.0f;
+            col[2] = col[2] <= 1.0f ? col[2] : 1.0f;
+            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
 			int ir = int(255.99*col[0]);
 			int ig = int(255.99*col[1]);
 			int ib = int(255.99*col[2]);
@@ -223,6 +255,11 @@ int main(){
             out_color[j * nx * 3 + i * 3 + 2] = ib;
 		}
 	}
+
+    std::ofstream ofs;
+    ofs.open("image.ppm", std::ios::out | std::ios::trunc);
+
+    ofs << "P3\n" << nx << " " << ny << "\n255\n";
 
     for (int j = ny - 1; j >= 0; j--) {
         for (int i = 0; i<nx; i++) {

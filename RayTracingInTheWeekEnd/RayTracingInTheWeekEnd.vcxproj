@@ -153,6 +153,7 @@
     <ClInclude Include="hitable.h" />
     <ClInclude Include="hitable_list.h" />
     <ClInclude Include="material.h" />
+    <ClInclude Include="medium.h" />
     <ClInclude Include="moving_sphere.h" />
     <ClInclude Include="noise.h" />
     <ClInclude Include="ray.h" />

@@ -83,5 +83,8 @@
     <ClInclude Include="transform.h">
       <Filter>ソース ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="medium.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
