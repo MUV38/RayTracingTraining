@@ -68,19 +68,19 @@ Vec3 operator/(const Vec3& v, const double k)
 }
 
 /// ì‡êœ
-double dot(const Vec3& v1, const Vec3& v2)
+double Dot(const Vec3& v1, const Vec3& v2)
 {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
 /// äOêœ
-Vec3 cross(const Vec3& v1, const Vec3& v2)
+Vec3 Cross(const Vec3& v1, const Vec3& v2)
 {
     return Vec3(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
 }
 
 /// ê≥ãKâª
-Vec3 normalize(const Vec3& v)
+Vec3 Normalize(const Vec3& v)
 {
     return v / v.length();
 }
@@ -90,6 +90,22 @@ std::ostream& operator<<(std::ostream& stream, const Vec3& v)
 {
     stream << "(" << v.x << ", " << v.y << ", " << v.z << ")";
     return stream;
+}
+
+/// ê≥ãKíºåäÓíÍ
+void OrthonormalBasis(const Vec3& v1, Vec3& v2, Vec3& v3)
+{
+    if (std::abs(v1.x) > 0.9)
+    {
+        v2 = Vec3(0, 1, 0);
+    }
+    else
+    {
+        v2 = Vec3(1, 0, 0);
+    }
+
+    v2 = Normalize(v2 - Dot(v1, v2) * v1);
+    v3 = Cross(v1, v2);
 }
 
 #endif // !VEC3_H_
