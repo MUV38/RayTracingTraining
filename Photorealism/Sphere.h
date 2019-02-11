@@ -18,7 +18,7 @@ public:
     {}
 
     /// Õ“Ë”»’è
-    bool intersect(const Ray& ray, Hit& res) const
+    bool Intersect(const Ray& ray, Hit& res) const
     {
         // 2Ÿ•û’ö®‚ÌŒW”
         double b = Dot(ray.direction, ray.origin - center);

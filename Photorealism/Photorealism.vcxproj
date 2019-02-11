@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Aggregate.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Hit.h" />
     <ClInclude Include="Image.h" />
