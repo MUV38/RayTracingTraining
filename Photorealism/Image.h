@@ -38,6 +38,12 @@ public:
         data[w + width * h] = c;
     }
 
+    /// ピクセル色加算
+    void AddPixel(int w, int h, const Vec3& c)
+    {
+        data[w + width * h] += c;
+    }
+
     /// すべてのピクセルを一定値で割る
     void Divide(double k)
     {

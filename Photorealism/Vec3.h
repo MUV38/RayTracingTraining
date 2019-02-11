@@ -17,6 +17,13 @@ public:
     /// ベクトルの長さ
     inline double length() const { return std::sqrt(length2()); }
     inline double length2() const { return x * x + y * y + z * z; }
+
+    void operator+=(const Vec3& v)
+    {
+        x += v.x;
+        y += v.y;
+        z += v.z;
+    }
 };
 
 /// ベクトル同士の演算
