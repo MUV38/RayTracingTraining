@@ -1,9 +1,9 @@
 #ifndef IMAGE_H_
 #define IMAGE_H_
 
+#include "MathUtil.h"
 #include <iostream>
 #include <fstream>
-#include <cmath>
 #include <string>
 #include "Vec3.h"
 #include "Uitl.h"

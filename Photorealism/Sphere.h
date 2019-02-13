@@ -1,20 +1,26 @@
 #ifndef SPHERE_H_
 #define SPHERE_H_
 
-#include <cmath>
+#include "MathUtil.h"
 #include "Vec3.h"
 #include "Ray.h"
 #include "Hit.h"
+#include "Material.h"
+#include "Light.h"
 
 class Sphere
 {
 public:
     Vec3    center;
     double  radius;
+    std::shared_ptr<Material> material;
+    std::shared_ptr<Light> light;
 
-    Sphere(const Vec3& center, double radius)
+    Sphere(const Vec3& center, double radius, const std::shared_ptr<Material>& material, const std::shared_ptr<Light>& light)
         : center(center)
         , radius(radius)
+        , material(material)
+        , light(light)
     {}
 
     /// Õ“Ë”»’è

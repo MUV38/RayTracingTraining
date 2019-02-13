@@ -1,8 +1,8 @@
 #ifndef VEC3_H_
 #define VEC3_H_
 
+#include "MathUtil.h"
 #include <iostream>
-#include <cmath>
 
 /// ３次元ベクトルクラス
 class Vec3
@@ -18,11 +18,41 @@ public:
     inline double length() const { return std::sqrt(length2()); }
     inline double length2() const { return x * x + y * y + z * z; }
 
-    void operator+=(const Vec3& v)
+    Vec3 operator-() const
+    {
+        return Vec3(-x, -y, -z);
+    }
+    Vec3& operator+=(const Vec3& v)
     {
         x += v.x;
         y += v.y;
         z += v.z;
+
+        return *this;
+    }
+    Vec3& operator-=(const Vec3& v)
+    {
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
+
+        return *this;
+    }
+    Vec3& operator*=(const Vec3& v)
+    {
+        x *= v.x;
+        y *= v.y;
+        z *= v.z;
+
+        return *this;
+    }
+    Vec3& operator/=(const Vec3& v)
+    {
+        x /= v.x;
+        y /= v.y;
+        z /= v.z;
+
+        return *this;
     }
 };
 
@@ -113,6 +143,22 @@ void OrthonormalBasis(const Vec3& v1, Vec3& v2, Vec3& v3)
 
     v2 = Normalize(v2 - Dot(v1, v2) * v1);
     v3 = Cross(v1, v2);
+}
+
+/// ワールド座標→ローカル座標
+Vec3 WorldToLocal(const Vec3& v, const Vec3& s, const Vec3& t, const Vec3& n)
+{
+    return Vec3(Dot(v, s), Dot(v, t), Dot(v, n));
+}
+
+/// ローカル座標→ワールド座標
+Vec3 LocalToWorld(const Vec3& v, const Vec3& s, const Vec3& t, const Vec3& n)
+{
+    Vec3 a = Vec3(s.x, n.x, t.x);
+    Vec3 b = Vec3(s.y, n.y, t.y);
+    Vec3 c = Vec3(s.z, n.z, t.z);
+
+    return Vec3(Dot(v, a), Dot(v, b), Dot(v, c));
 }
 
 #endif // !VEC3_H_
