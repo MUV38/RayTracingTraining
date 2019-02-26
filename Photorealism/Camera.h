@@ -19,6 +19,10 @@ public:
     {
         OrthonormalBasis(camForward, camRight, camUp);
 
+        this->camForward    = Normalize(this->camForward);
+        this->camRight      = Normalize(camRight);
+        this->camUp         = Normalize(camUp);
+
         std::cout << "camPos: " << camPos << std::endl;
         std::cout << "camForward: " << camForward << std::endl;
         std::cout << "camRight: " << camRight << std::endl;

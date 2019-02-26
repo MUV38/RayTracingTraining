@@ -2,6 +2,7 @@
 #define SPHERE_H_
 
 #include "MathUtil.h"
+#include <memory>
 #include "Vec3.h"
 #include "Ray.h"
 #include "Hit.h"
