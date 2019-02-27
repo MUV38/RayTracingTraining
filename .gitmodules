@@ -1,3 +1,6 @@
 [submodule "RayTracingInTheWeekEnd/ThirdParty/stb"]
 	path = RayTracingInTheWeekEnd/ThirdParty/stb
 	url = https://github.com/nothings/stb
+[submodule "Photorealism/ThirdParty/stb"]
+	path = Photorealism/ThirdParty/stb
+	url = https://github.com/nothings/stb
